@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fetch and Table</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        table {
+            font-family: Arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+            border: 2px solid #ddd;
+        }
+
+        th, td {
+            border: 1px solid #ddd; 
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #9fc3ff;
+            text-align: center;
+            font-weight: bold;
+            border-color: #ddd; 
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .active-header {
+            background-color: #3f97ee; 
+            color: white;
+        }
+
+        .retired-header {
+            background-color: #ff0000; 
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form>
+            <!-- <label for="status">Status:</label> -->
+            <select id="status">
+                <option value="" disabled selected>Select Status</option>
+                <option value="Active">Active</option>
+                <option value="Retired">Retired</option>
+                <option value="Unknown">Unknown</option>
+                <option value="Destroyed">Destroyed</option>
+            </select>
+            <button id="loadBtn">Load</button>
+        </form>
+        <table id="resultTable">
+        </table>
+    </div>
+    <script>
+        let jsonData = [
+            {
+                "capsule_id": "C106",
+                "no_of_mission": 3,
+                "status": "Active",
+                "details": "First Dragon capsule to be reused"
+            },
+            {
+                "capsule_id": "C205",
+                "no_of_mission": 1,
+                "status": "Active",
+                "details": "In Construction for use"
+            },
+            {
+                "capsule_id": "C203",
+                "no_of_mission": 0,
+                "status": "Active",
+                "details": "Rumored to be used for inflight"
+            },
+            {
+                "capsule_id": "C202",
+                "no_of_mission": 2,
+                "status": "Retired",
+                "details": "Rumored to be used for inflight"
+            }
+          
+        ];
+
+        function displayFilteredData(status) {
+            const resultTable = document.getElementById('resultTable');
+            resultTable.innerHTML = '';
+
+            const filteredData = jsonData.filter((item) => item.status === status);
+
+            if (filteredData.length > 0) {
+                resultTable.innerHTML += `
+                    <tr>
+                        <th class="${status.toLowerCase()}-header" colspan="3">${status}</th>
+                    </tr>
+                    <tr>
+                        <th>Capsule ID</th>
+                        <th>No of Mission</th>
+                        <th>Details</th>
+                    </tr>
+                `;
+
+                // Add data rows
+                filteredData.forEach((item) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.capsule_id}</td>
+                        <td>${item.no_of_mission}</td>
+                        <td>${item.details}</td>
+                    `;
+                    resultTable.appendChild(row);
+                });
+            }
+        }
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            const statusSelect = document.getElementById('status');
+            const selectedStatus = statusSelect.value;
+            displayFilteredData(selectedStatus);
+        }
+
+        const loadButton = document.getElementById('loadBtn');
+        loadButton.addEventListener('click', handleSubmit);
+    </script>
+</body>
+</html>
